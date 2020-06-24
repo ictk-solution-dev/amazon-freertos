@@ -59,19 +59,19 @@
  *  @brief Indicates how long  receive needs to wait for data before Timeout happens.
  *
  */
-#define         integrationtestportableRECEIVE_TIMEOUT             2000
+#define         integrationtestportableRECEIVE_TIMEOUT             10000 //2000
 
 /**
  * @brief Indicates how long  send needs to wait before Timeout happens.
  *
  */
-#define         integrationtestportableSEND_TIMEOUT                2000
+#define         integrationtestportableSEND_TIMEOUT                10000 //2000
 
 
 /**
  * @brief       LwIP TCP/IP stack needs further optimize the reduce the test time.
  */
-#define         tcptestECHO_TEST_SYNC_TIMEOUT                      180000 /* MS */
+#define         tcptestECHO_TEST_SYNC_TIMEOUT                      300000 /* MS */
 
 
 #endif /*AWS_INTEGRATION_TEST_TCP_CONFIG_H */
