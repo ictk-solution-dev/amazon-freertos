@@ -502,7 +502,8 @@ int32_t SOCKETS_Recv( Socket_t xSocket,
     ctx->recv_flag = ulFlags;
 
     configASSERT( ctx->ip_socket >= 0 );
-
+    vTaskDelay(10);
+    
     if( ctx->enforce_tls )
     {
         /* Receive through TLS pipe, if negotiated. */
@@ -521,10 +522,8 @@ int32_t SOCKETS_Send( Socket_t xSocket,
                       size_t xDataLength,
                       uint32_t ulFlags )
 {
-    vTaskDelay(1);
     ss_ctx_t * ctx;
-    int32_t ret = -1;
-    
+
     if( SOCKETS_INVALID_SOCKET == xSocket )
     {
         return SOCKETS_SOCKET_ERROR;
@@ -544,13 +543,12 @@ int32_t SOCKETS_Send( Socket_t xSocket,
 
     configASSERT( ctx->ip_socket >= 0 );
     ctx->send_flag = ulFlags;
+    vTaskDelay(10);
 
     if( ctx->enforce_tls )
     {
         /* Send through TLS pipe, if negotiated. */
-        ret =  TLS_Send( ctx->tls_ctx, pvBuffer, xDataLength );
-        vTaskDelay(1);
-        return ret;
+        return TLS_Send( ctx->tls_ctx, pvBuffer, xDataLength );
     }
     else
     {
