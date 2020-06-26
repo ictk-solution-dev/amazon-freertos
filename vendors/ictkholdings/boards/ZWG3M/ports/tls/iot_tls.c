@@ -50,12 +50,7 @@
 
 #ifdef ICTK_TLS
 #include "ictk/profile.h"   
-#endif 
-
-#ifdef G3_SEMAPHORE
-#include "g3_semaphore.h"
-#endif
-
+#endif   
 #if defined(MBEDTLS_SSL_CIPHERSUITES_RSA)
 extern uint32_t cipher_suite_flag;
 #endif   
@@ -118,7 +113,7 @@ typedef struct TLSContext
 #define TLS_HANDSHAKE_STARTED        ( 1 )
 #define TLS_HANDSHAKE_SUCCESSFUL     ( 2 )
 
-#define TLS_PRINT( X )    //vLoggingPrintf X //jsplee: disable
+#define TLS_PRINT( X )    //vLoggingPrintf X
 
 /*-----------------------------------------------------------*/
 
@@ -1087,6 +1082,7 @@ BaseType_t TLS_Recv( void * pvContext,
             xResult = mbedtls_ssl_read( &pxCtx->xMbedSslCtx,
                                         pucReadBuffer + xRead,
                                         xReadLength - xRead );
+            vTaskDelay(5);
 
             if( xResult > 0 )
             {
@@ -1113,7 +1109,7 @@ BaseType_t TLS_Recv( void * pvContext,
         /* xResult < 0 is a hard error, so invalidate the context and stop. */
         prvFreeContext( pxCtx );
     }
-
+    //vTaskDelay(10);
     return xResult;
 }
 
@@ -1134,10 +1130,11 @@ BaseType_t TLS_Send( void * pvContext,
             xResult = mbedtls_ssl_write( &pxCtx->xMbedSslCtx,
                                          pucMsg + xWritten,
                                          xMsgLength - xWritten );
-
+            vTaskDelay(10);
             if( 0 < xResult )
             {
                 /* Sent data, so update the tally and keep looping. */
+              
                 xWritten += ( size_t ) xResult;
             }
             else if( ( 0 == xResult ) || ( -pdFREERTOS_ERRNO_ENOSPC == xResult ) )
@@ -1166,6 +1163,7 @@ BaseType_t TLS_Send( void * pvContext,
         xResult = ( BaseType_t ) xWritten;
     }
 
+    vTaskDelay(10);
     return xResult;
 }
 
@@ -1179,6 +1177,7 @@ void TLS_Cleanup( void * pvContext )
 #endif
     if( NULL != pxCtx )
     {
+    
         prvFreeContext( pxCtx );
 
         /* Free memory. */

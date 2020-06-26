@@ -49,7 +49,7 @@
 //#define ICTK_G3_I2C_DMA
 #define G3_SEMAPHORE
 #define G3_PKCS11 
-#define G3_MAX_CERT_SIZE                    ( 3000)
+#define G3_MAX_CERT_SIZE                    ( 3000 )
 
 //------------------------------------------------------------------------------
 /*              TEST_CONFIG      */
@@ -59,6 +59,7 @@
 #define MBEDTLS_ENTROPY_C                     
 #define tcptestTCP_ECHO_TASKS_STACK_SIZE    (configMINIMAL_STACK_SIZE*6)
 #define MBEDTLS_SSL_CIPHERSUITES_RSA    MBEDTLS_TLS_RSA_WITH_AES_128_GCM_SHA256
+#define IOT_TEST_MQTT_TIMEOUT_MS             ( 15000 )
 
 //------------------------------------------------------------------------------
 #undef ZNT_MINICLI
