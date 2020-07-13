@@ -402,10 +402,10 @@ static int prvPrivateKeySigningCallback( void * pvContext,
     //uint8_t pucSig[ 64 + 15 ];
     //size_t *pucSig_len = 64;
     
-    CK_BYTE xSignature[ pkcs11ECDSA_P256_SIGNATURE_LENGTH + 10 ] = { 0 };
+    CK_BYTE xSignature[ pkcs11RSA_2048_SIGNATURE_LENGTH + 10 ] = { 0 };               //dkyeo
     CK_BYTE xSignaturePKCS[ 64 ] = { 0 };
-    size_t xSignatureLength = pkcs11ECDSA_P256_SIGNATURE_LENGTH;
-    uint8_t ecSignature[ pkcs11ECDSA_P256_SIGNATURE_LENGTH + 15 ]; /*TODO: Figure out this length. */
+    size_t xSignatureLength = pkcs11RSA_2048_SIGNATURE_LENGTH;
+    uint8_t ecSignature[ pkcs11RSA_2048_SIGNATURE_LENGTH + 15 ]; /*TODO: Figure out this length. */
     CK_BYTE_PTR pxSignatureBuffer = ecSignature;
     TLS_PRINT( ( "prvPrivateKeySigningCallback\r\n" ) );
 
@@ -422,7 +422,7 @@ static int prvPrivateKeySigningCallback( void * pvContext,
     //mbedtls_pk_init( &pxSession->xSignKey );
     mbedtls_pk_init( &pxTLSContext->xMbedPkCtx);
     
-#ifdef ICTK_TLS         
+#if ( defined( ICTK_TLS ) && ( MBEDTLS_SSL_CIPHERSUITES == MBEDTLS_TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256 ) )         //dkyeo
     if (0 != ictktls_pk_parse_key(&pxTLSContext->xMbedPkCtx, NULL, 0, NULL, 0) )
     {
         TLS_PRINT( ( "ERROR: Unable to parse private key for signing. \r\n" ) );
@@ -546,6 +546,7 @@ static int prvReadCertificateIntoContext( TLSContext_t * pxTlsContext,
  *
  * @return Zero on success.
  */
+
 static int prvInitializeClientCredential( TLSContext_t * pxCtx )
 {
 #ifdef G3_SEMAPHORE  
@@ -565,7 +566,7 @@ static int prvInitializeClientCredential( TLSContext_t * pxCtx )
 
     /* Initialize the mbed contexts. */
     mbedtls_x509_crt_init( &pxCtx->xMbedX509Cli );
-    
+
 #if defined(TLS_PKCS11)
     /**/
 
@@ -736,7 +737,11 @@ static int prvInitializeClientCredential( TLSContext_t * pxCtx )
     }
     TLS_PRINT( ( "mbedtls_ssl_conf_own_cert called %d\n",xResult ) );
 #else
+#if ( MBEDTLS_SSL_CIPHERSUITES == MBEDTLS_TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256 )
     memcpy( &pxCtx->xMbedPkInfo, mbedtls_pk_info_from_type( MBEDTLS_PK_ECKEY ), sizeof( mbedtls_pk_info_t ) );
+#else
+    memcpy( &pxCtx->xMbedPkInfo, mbedtls_pk_info_from_type( MBEDTLS_PK_RSA ), sizeof( mbedtls_pk_info_t ) );
+#endif    
     
     pxCtx->xMbedPkInfo.sign_func = prvPrivateKeySigningCallback;
     pxCtx->xMbedPkCtx.pk_info = &pxCtx->xMbedPkInfo;
@@ -747,7 +752,7 @@ static int prvInitializeClientCredential( TLSContext_t * pxCtx )
 
     if( 0 == xResult )
     {
-#ifdef ICTK_TLS     
+#if ( defined( ICTK_TLS ) && ( MBEDTLS_SSL_CIPHERSUITES == MBEDTLS_TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256 ) )         //dkyeo
         certlen = G3_MAX_CERT_SIZE;
         xResult = get_cert_from_profile(CLIENT, cert, &certlen);
 
@@ -775,7 +780,11 @@ static int prvInitializeClientCredential( TLSContext_t * pxCtx )
                                              &pxCtx->xMbedPkCtx );
     }
 #endif
+    
+#ifdef ICTK_TLS
     vPortFree(cert);
+#endif    
+    
 #ifdef G3_SEMAPHORE    
     g3_mutex_unlock();    
 #endif
@@ -905,9 +914,10 @@ BaseType_t TLS_Connect( void * pvContext )
                                           ( const unsigned char * ) tlsVERISIGN_ROOT_CERTIFICATE_PEM,
                                           tlsVERISIGN_ROOT_CERTIFICATE_LENGTH );
 
+
         if( 0 == xResult )
         {
-#ifdef ICTK_TLS
+#if ( defined( ICTK_TLS ) && ( MBEDTLS_SSL_CIPHERSUITES == MBEDTLS_TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256 ) )         //dkyeo
 #ifdef G3_SEMAPHORE
             g3_mutex_lock();
 #endif
@@ -926,8 +936,8 @@ BaseType_t TLS_Connect( void * pvContext )
           
 #else
             xResult = mbedtls_x509_crt_parse( &pxCtx->xMbedX509CA,
-                                              ( const unsigned char * ) tlsATS3_ROOT_CERTIFICATE_PEM,
-                                              tlsATS3_ROOT_CERTIFICATE_LENGTH );
+                                              ( const unsigned char * ) tlsATS1_ROOT_CERTIFICATE_PEM,
+                                              tlsATS1_ROOT_CERTIFICATE_LENGTH );
 
             if( 0 == xResult )
             {
