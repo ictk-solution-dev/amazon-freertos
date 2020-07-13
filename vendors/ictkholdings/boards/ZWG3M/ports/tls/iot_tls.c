@@ -764,8 +764,8 @@ static int prvInitializeClientCredential( TLSContext_t * pxCtx )
         xResult = mbedtls_x509_crt_parse( &pxCtx->xMbedX509Cli, cert, certlen); //null     
 #else          
         xResult = mbedtls_x509_crt_parse( &pxCtx->xMbedX509Cli,
-                                           ( const unsigned char * ) pcJitrCertificate,
-                                           1 + strlen( pcJitrCertificate ) );
+                                           ( const unsigned char * ) keyCLIENT_CERTIFICATE_PEM,
+                                           1 + strlen( keyCLIENT_CERTIFICATE_PEM ) );
         
 #endif        
     }
