@@ -42,6 +42,7 @@
 #define ICTK_TLS                                               
 #define ICTK_TLS_PREMASTER_IN_PUF                                 
 #undef ICTK_TLS_DEBUG                      
+#define MBEDTLS_PREMASTERSECRET
 
 //------------------------------------------------------------------------------
 /*              G3_CONFIG      */

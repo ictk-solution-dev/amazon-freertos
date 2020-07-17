@@ -1092,7 +1092,7 @@ BaseType_t TLS_Recv( void * pvContext,
             xResult = mbedtls_ssl_read( &pxCtx->xMbedSslCtx,
                                         pucReadBuffer + xRead,
                                         xReadLength - xRead );
-            vTaskDelay(5);
+            //vTaskDelay(5);
 
             if( xResult > 0 )
             {
@@ -1140,7 +1140,7 @@ BaseType_t TLS_Send( void * pvContext,
             xResult = mbedtls_ssl_write( &pxCtx->xMbedSslCtx,
                                          pucMsg + xWritten,
                                          xMsgLength - xWritten );
-            vTaskDelay(10);
+            //vTaskDelay(10);
             if( 0 < xResult )
             {
                 /* Sent data, so update the tally and keep looping. */
@@ -1173,7 +1173,7 @@ BaseType_t TLS_Send( void * pvContext,
         xResult = ( BaseType_t ) xWritten;
     }
 
-    vTaskDelay(10);
+    //vTaskDelay(10);
     return xResult;
 }
 

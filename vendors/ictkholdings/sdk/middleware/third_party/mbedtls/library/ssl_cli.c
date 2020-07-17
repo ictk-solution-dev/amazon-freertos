@@ -3011,7 +3011,7 @@ static int ssl_write_client_key_exchange( mbedtls_ssl_context *ssl )
         }
 #endif
 
- #if !defined(ICTK_TLS)
+#ifdef MBEDTLS_PREMASTERSECRET //#if !defined(ICTK_TLS)
  		ret = mbedtls_ecdh_make_public( &ssl->handshake->ecdh_ctx,
                                 &n,
                                 &ssl->out_msg[i], 1000,
@@ -3045,6 +3045,19 @@ ecdh_calc_secret:
 		mbedtls_mpi_write_binary( &ssl->handshake->ecdh_ctx.Qp.Y, &puk[32], 32);
 #ifdef ICTK_TLS_PREMASTER_IN_PUF
 		size_t pmslen;
+#ifdef MBEDTLS_PREMASTERSECRET
+		if( ( ret = mbedtls_ecdh_calc_secret( &ssl->handshake->ecdh_ctx,
+									  &ssl->handshake->pmslen,
+									   ssl->handshake->premaster,
+									   MBEDTLS_MPI_MAX_SIZE,
+									   ssl->conf->f_rng, ssl->conf->p_rng ) ) != 0 )
+		{
+			MBEDTLS_SSL_DEBUG_RET( 1, "mbedtls_ecdh_calc_secret", ret );
+
+			return( ret );
+		}
+                
+#else                
 		if( ( ret = ictktls_ecdh_calc_secret( 0/*NORMAL_ECDH*/, puk, &ssl->out_msg[i],
 									   &n,
 									   NULL,
@@ -3055,7 +3068,8 @@ ecdh_calc_secret:
 
 			return( ret );
 		}
-	    ssl->handshake->pmslen = pmslen ;
+                ssl->handshake->pmslen = pmslen ;
+#endif          /*MBEDTLS_PREMASTERSECRET*/
 #else
 		if( ( ret = ictktls_ecdh_calc_secret( 1/*GEN_TLS_BLOCK*/, puk, &ssl->out_msg[i],
 									   &n,
