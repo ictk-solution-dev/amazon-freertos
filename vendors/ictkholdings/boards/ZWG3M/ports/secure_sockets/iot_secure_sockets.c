@@ -502,7 +502,7 @@ int32_t SOCKETS_Recv( Socket_t xSocket,
     ctx->recv_flag = ulFlags;
 
     configASSERT( ctx->ip_socket >= 0 );
-    //vTaskDelay(10);
+    vTaskDelay(10);
     
     if( ctx->enforce_tls )
     {
@@ -543,7 +543,7 @@ int32_t SOCKETS_Send( Socket_t xSocket,
 
     configASSERT( ctx->ip_socket >= 0 );
     ctx->send_flag = ulFlags;
-    //vTaskDelay(10);
+    vTaskDelay(10);
 
     if( ctx->enforce_tls )
     {
@@ -630,7 +630,7 @@ int32_t SOCKETS_Close( Socket_t xSocket )
         while( ( ctx->state != SST_RX_CLOSED ) && ( cnt < 30 ) )
         {
             cnt++;
-            //vTaskDelay( 10 );
+            vTaskDelay( 10 );
         }
 
         lwip_close( ctx->ip_socket );

@@ -153,7 +153,7 @@ static int aes_crypt_ecb_wrap( void *ctx, mbedtls_operation_t operation,
         const unsigned char *input, unsigned char *output )
 {
   int ret = 0;
-    //vTaskDelay(10);
+    vTaskDelay(10);
 #if defined(ICTK_TLS_DEBUG)
 	printf("aes_crypt_ecb_wrap\r\n");
 #endif
@@ -189,7 +189,7 @@ static int aes_crypt_ecb_wrap( void *ctx, mbedtls_operation_t operation,
 static int aes_crypt_cbc_wrap( void *ctx, mbedtls_operation_t operation, size_t length,
         unsigned char *iv, const unsigned char *input, unsigned char *output )
 {
-    //vTaskDelay(10);
+    vTaskDelay(10);
 #if defined(ICTK_TLS_DEBUG)
 		printf("aes_crypt_cbc_wrap is called\r\n");
 #endif
@@ -281,7 +281,7 @@ static int aes_crypt_xts_wrap( void *ctx, mbedtls_operation_t operation,
 static int aes_setkey_dec_wrap( void *ctx, const unsigned char *key,
                                 unsigned int key_bitlen )
 {
-    //vTaskDelay(10);
+    vTaskDelay(10);
 #if defined(ICTK_TLS_DEBUG)
 	printf("aes_setkey_dec_wrap is called\r\n");
 #endif
@@ -302,7 +302,7 @@ static int aes_setkey_dec_wrap( void *ctx, const unsigned char *key,
 static int aes_setkey_enc_wrap( void *ctx, const unsigned char *key,
                                 unsigned int key_bitlen )
 {
-    //vTaskDelay(10);
+    vTaskDelay(10);
 #if defined(ICTK_TLS_DEBUG)
 	printf("aes_setkey_enc_wrap is called\r\n");
 #endif
