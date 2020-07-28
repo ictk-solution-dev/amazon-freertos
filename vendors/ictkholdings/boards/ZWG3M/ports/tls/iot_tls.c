@@ -51,14 +51,19 @@
 #ifdef ICTK_TLS
 #include "ictk/profile.h"   
 #endif   
-#if defined(MBEDTLS_SSL_CIPHERSUITES_RSA)
-extern uint32_t cipher_suite_flag;
-#endif   
 
 /* C runtime includes. */
 #include <string.h>
 #include <time.h>
 #include <stdio.h>
+
+#if defined(MBEDTLS_SSL_CIPHERSUITES_RSA)
+extern uint32_t cipher_suite_flag;
+#endif
+
+#ifdef ICTK_TLS_FOR_AWSTEST
+static uint32_t prevention_overload;
+#endif
 
 /**
  * @brief Internal context structure.
@@ -873,8 +878,19 @@ BaseType_t TLS_Connect( void * pvContext )
     BaseType_t xResult = 0;
 #ifdef ICTK_TLS
     unsigned char cert[G3_MAX_CERT_SIZE];
-    int certlen = 0;
+    int certlen = 0;    
 #endif
+    
+#ifdef ICTK_TLS_FOR_AWSTEST 
+#ifdef G3_SEMAPHORE
+    g3_mutex_lock();
+    prevention_overload = 0;
+    g3_mutex_unlock();
+#else
+    prevention_overload = 0;
+#endif 
+#endif
+    
     TLSContext_t * pxCtx = ( TLSContext_t * ) pvContext; /*lint !e9087 !e9079 Allow casting void* to other types. */
     TLS_PRINT( ( "TLS_Connect called" ) );
 
@@ -1092,7 +1108,7 @@ BaseType_t TLS_Recv( void * pvContext,
             xResult = mbedtls_ssl_read( &pxCtx->xMbedSslCtx,
                                         pucReadBuffer + xRead,
                                         xReadLength - xRead );
-            vTaskDelay(5);
+            //vTaskDelay(5);
 
             if( xResult > 0 )
             {
@@ -1119,7 +1135,16 @@ BaseType_t TLS_Recv( void * pvContext,
         /* xResult < 0 is a hard error, so invalidate the context and stop. */
         prvFreeContext( pxCtx );
     }
-    //vTaskDelay(10);
+
+#ifdef ICTK_TLS_FOR_AWSTEST
+#ifdef G3_SEMAPHORE
+    g3_mutex_lock();
+    prevention_overload = 0;
+    g3_mutex_unlock();
+#else
+    prevention_overload = 0;
+#endif 
+#endif
     return xResult;
 }
 
@@ -1129,6 +1154,7 @@ BaseType_t TLS_Send( void * pvContext,
                      const unsigned char * pucMsg,
                      size_t xMsgLength )
 {
+    hal_gpt_delay_ms(3);
     BaseType_t xResult = 0;
     TLSContext_t * pxCtx = ( TLSContext_t * ) pvContext; /*lint !e9087 !e9079 Allow casting void* to other types. */
     size_t xWritten = 0;
@@ -1140,7 +1166,7 @@ BaseType_t TLS_Send( void * pvContext,
             xResult = mbedtls_ssl_write( &pxCtx->xMbedSslCtx,
                                          pucMsg + xWritten,
                                          xMsgLength - xWritten );
-            vTaskDelay(10);
+            //vTaskDelay(10);
             if( 0 < xResult )
             {
                 /* Sent data, so update the tally and keep looping. */
@@ -1172,8 +1198,33 @@ BaseType_t TLS_Send( void * pvContext,
     {
         xResult = ( BaseType_t ) xWritten;
     }
-
-    vTaskDelay(10);
+    
+#ifdef ICTK_TLS_FOR_AWSTEST
+#ifdef G3_SEMAPHORE
+    g3_mutex_lock();
+    if(prevention_overload > 8)
+    {
+        vTaskDelay(4);
+        prevention_overload = 0;
+    }
+    else
+    {
+        prevention_overload++;
+    }
+    g3_mutex_unlock();
+#else
+    if(prevention_overload > 8)
+    {
+        vTaskDelay(4);
+        prevention_overload = 0;
+    }
+    else
+    {
+        prevention_overload++;
+    }
+#endif 
+#endif
+    
     return xResult;
 }
 

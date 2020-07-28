@@ -42,7 +42,7 @@
 #define ICTK_TLS                                               
 #define ICTK_TLS_PREMASTER_IN_PUF                                 
 #undef ICTK_TLS_DEBUG                      
-#define MBEDTLS_PREMASTERSECRET
+#undef MBEDTLS_PREMASTERSECRET
 
 //------------------------------------------------------------------------------
 /*              G3_CONFIG      */
@@ -61,6 +61,7 @@
 #define tcptestTCP_ECHO_TASKS_STACK_SIZE    (configMINIMAL_STACK_SIZE*6)
 #define MBEDTLS_SSL_CIPHERSUITES_RSA    MBEDTLS_TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
 #define IOT_TEST_MQTT_TIMEOUT_MS             ( 15000 )
+#define ipconfigTCP_MSS                   ( 1024 )
 
 //------------------------------------------------------------------------------
 #undef ZNT_MINICLI
