@@ -1154,7 +1154,7 @@ BaseType_t TLS_Send( void * pvContext,
                      const unsigned char * pucMsg,
                      size_t xMsgLength )
 {
-    hal_gpt_delay_ms(3);
+    hal_gpt_delay_ms(4);
     BaseType_t xResult = 0;
     TLSContext_t * pxCtx = ( TLSContext_t * ) pvContext; /*lint !e9087 !e9079 Allow casting void* to other types. */
     size_t xWritten = 0;
@@ -1213,9 +1213,9 @@ BaseType_t TLS_Send( void * pvContext,
     }
     g3_mutex_unlock();
 #else
-    if(prevention_overload > 8)
+    if(prevention_overload > 6)
     {
-        vTaskDelay(4);
+        vTaskDelay(5);
         prevention_overload = 0;
     }
     else
