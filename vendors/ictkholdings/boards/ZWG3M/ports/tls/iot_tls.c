@@ -1202,9 +1202,9 @@ BaseType_t TLS_Send( void * pvContext,
 #ifdef ICTK_TLS_FOR_AWSTEST
 #ifdef G3_SEMAPHORE
     g3_mutex_lock();
-    if(prevention_overload > 8)
+    if(prevention_overload > 6)
     {
-        vTaskDelay(4);
+        vTaskDelay(6);
         prevention_overload = 0;
     }
     else
@@ -1215,7 +1215,7 @@ BaseType_t TLS_Send( void * pvContext,
 #else
     if(prevention_overload > 6)
     {
-        vTaskDelay(5);
+        vTaskDelay(6);
         prevention_overload = 0;
     }
     else
