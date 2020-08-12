@@ -58,7 +58,7 @@
                 </option>
                 <option>
                     <name>RTDescription</name>
-                    <state>To be used with the full configuration of the C/C++ runtime library. Full locale interface, C locale, file descriptor support, multibytes in printf and scanf, and hex floats in strtod.</state>
+                    <state>Use the full configuration of the C/C++ runtime library. Full locale interface, C locale, file descriptor support, multibytes in printf and scanf, and hex floats in strtod.</state>
                 </option>
                 <option>
                     <name>OGProductVersion</name>
@@ -354,7 +354,6 @@
                     <state>$PROJ_DIR$\..\..\..\..\..\vendors\ictkholdings\sdk\middleware\MTK\nvdm\inc</state>
                     <state>$PROJ_DIR$\..\..\..\..\..\demos\dev_mode_key_provisioning\include</state>
                     <state>$PROJ_DIR$\..\..\..\..\..\vendors\ictkholdings\sdk\driver\board\mt7686_hdk\util\inc</state>
-                    <state>$PROJ_DIR$\..\..\..\..\..\libraries\freertos_plus\standard\pkcs11\include</state>
                     <state>$PROJ_DIR$\..\..\..\..\..\libraries\3rdparty\pkcs11</state>
                     <state>$PROJ_DIR$\..\..\..\..\..\vendors\ictkholdings\sdk\middleware\MTK\connsys\inc</state>
                     <state>$PROJ_DIR$\..\..\..\..\..\vendors\ictkholdings\sdk\middleware\MTK\wifi_service\combo\inc</state>
@@ -415,6 +414,7 @@
                     <state>$PROJ_DIR$\..\..\..\..\..\vendors\ictkholdings\sdk\kernel\service\syslog\inc</state>
                     <state>$PROJ_DIR$\..\..\..\..\..\vendors\ictkholdings\sdk\kernel\extend\inc</state>
                     <state>$PROJ_DIR$\..\..\..\..\..\freertos_kernel\portable\IAR\ARM_CM4F</state>
+                    <state>$PROJ_DIR$\..\..\..\..\..\vendors\ictkholdings\boards\ZWG3M\ports\pkcs11\include</state>
                 </option>
                 <option>
                     <name>CCStdIncCheck</name>
